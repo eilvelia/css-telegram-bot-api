@@ -1,6 +1,6 @@
 const css = require('css')
-const Method = require('./Method')
-const Command = require('./Command')
+const Method = require('html-telegram-bot-api/src/Method')
+const Command = require('html-telegram-bot-api/src/Command')
 
 const _ = {}
 

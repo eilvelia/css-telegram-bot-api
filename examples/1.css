@@ -1,0 +1,18 @@
+[tg-root] {
+  /* Replace the value below with the API token you receive from Bot Father */
+  tg-token: 254259451:AA5cAlGQj51K9AD37v_522HC-5lFgB;
+}
+
+[tg-command="/start"] {
+  tg-method: sendMessage text Start;
+  /* example: */
+  /* tg-method: methodName param1 value1 param2 value2; */
+}
+
+[tg-command="/help"] {
+  tg-method: sendMessage text Help;
+}
+
+[tg-command="/photo"] {
+  tg-method: sendPhoto photo https://www.w3.org/html/logo/downloads/HTML5_Badge_64.png;
+}

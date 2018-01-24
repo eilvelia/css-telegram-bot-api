@@ -8,15 +8,15 @@ let filename = ''
 
 program
   .version(pkg.version)
-  .arguments('<path-to-html-file>')
+  .arguments('<path/to/css/file>')
   .action(arg => (filename = arg))
   .parse(process.argv)
 
-const html = fs.readFileSync(filename).toString()
+const css = fs.readFileSync(filename).toString()
 
-const parser = new Parser(html)
+const parser = new Parser(css)
 
-const { token, commands } = parser.parseHTML()
+const { token, commands } = parser.parseCSS()
 
 const bot = new TelegramBot(token)
 

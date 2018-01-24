@@ -1,123 +1,94 @@
-const cheerio = require('cheerio')
+const css = require('css')
 const Method = require('./Method')
 const Command = require('./Command')
+
+const _ = {}
+
+_.chunk = require('lodash.chunk')
+_.fromPairs = require('lodash.frompairs')
 
 class Parser {
   /**
    * Parser
-   * @param {string} html
+   * @param {string} css
    */
-  constructor (html) {
-    this.$ = cheerio.load(html)
+  constructor (str) {
+    const { stylesheet } = css.parse(str)
+
+    if (stylesheet.parsingErrors.length) {
+      console.error('Error!', stylesheet.parsingErrors)
+      throw new Error('Parsing Error')
+    }
+
+    const rules = stylesheet.rules.filter(e => e.type === 'rule')
+
+    this.rules = rules
   }
 
   /**
-   * parseHTML
-   * @method parseHTML
+   * parseCSS
+   * @method parseCSS
    * @return {{ token: string, commands: Array<Command> }}
    */
-  parseHTML () {
-    const { $ } = this
+  parseCSS () {
+    const { rules } = this
 
-    const $root = $('[data-tg-root]').first()
+    let token = ''
 
-    const $token = $root.find('[data-tg-token]').first()
+    const commands = rules.reduce((commands, rule) => {
+      const selector = rule.selectors[0]
 
-    const $commandsRoot = $root.find('[data-tg-commands]').first()
+      if (selector === '[tg-root]') {
+        token = Parser.parseRoot(rule)
+      }
 
-    const $commands = $commandsRoot.find('[data-tg-command]')
+      const match = selector.match(/\[tg-command="(.+?)"\]/)
 
-    const token = $token.html()
-    const commands = this.parseCommands($commands)
+      if (match) {
+        const [, trigger] = match
+        const methods = Parser.parseMethods(rule)
+
+        const command = new Command(trigger, methods)
+
+        commands.push(command)
+      }
+
+      return commands
+    }, [])
+
+    if (!token) throw new Error('Token not specified')
 
     return { token, commands }
   }
 
   /**
-   * parseCommands
-   * @method parseCommands
-   * @param {cheerio} $commands
-   * @return {Array<Command>}
+   * parseRoot
+   * @param {Object} rule
+   * @return {string} token
    */
-  parseCommands ($commands) {
-    const { $ } = this
+  static parseRoot (rule) {
+    /** @type {Object|undefined} */
+    const declaration = rule.declarations.find(e => e.property === 'tg-token')
 
-    const commands = []
-
-    $commands.each((i, commandEl) => {
-      const $command = $(commandEl)
-
-      const isRegex = commandEl.attribs['data-tg-regex'] != null
-
-      const commandAttrib = commandEl.attribs['data-tg-command']
-
-      const $methods = $command.find('[data-tg-method]')
-
-      const trigger = isRegex ? new RegExp(commandAttrib) : commandAttrib
-      const methods = this.parseMethods($methods)
-
-      const command = new Command(trigger, methods)
-
-      commands.push(command)
-    })
-
-    return commands
+    return declaration ? declaration.value : ''
   }
 
   /**
    * parseMethods
-   * @method parseMethods
-   * @param {cheerio} $methods
+   * @param {Object} rule
    * @return {Array<Method>}
    */
-  parseMethods ($methods) {
-    const { $ } = this
+  static parseMethods (rule) {
+    return rule.declarations
+      .filter(e => e.type === 'declaration' && e.property === 'tg-method')
+      .map(e => {
+        const splitted = e.value.split(' ')
+        const name = splitted[0]
+        const pairs = _.chunk(splitted.slice(1), 2)
+        const properties = _.fromPairs(pairs)
 
-    const methods = []
-
-    $methods.each((i, methodEl) => {
-      const $method = $(methodEl)
-
-      const methodName = methodEl.attribs['data-tg-method']
-      const text = $method.html()
-
-      const $params = $method.find('[data-tg-param]')
-
-      const options = this.parseParameters($params)
-
-      if (Object.keys(options).length === 0) {
-        options.text = text
-      }
-
-      const method = new Method(methodName, options)
-
-      methods.push(method)
-    })
-
-    return methods
-  }
-
-  /**
-   * parseParameters
-   * @method parseParameters
-   * @param {cheerio} $params
-   * @return {Object}
-   */
-  parseParameters ($params) {
-    const { $ } = this
-
-    const params = {}
-
-    $params.each((i, paramEl) => {
-      const $param = $(paramEl)
-
-      const key = paramEl.attribs['data-tg-param']
-      const value = $param.html()
-
-      params[key] = value
-    })
-
-    return params
+        return new Method(name, properties)
+      })
   }
 }
 

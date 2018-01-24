@@ -54,7 +54,7 @@ $ css-telegram-bot-api [options] <path/to/css/file>
 
 ## Related
 
-[html-telegram-bot-api](https://github.com/Bannerets/html-telegram-bot-api)
+* [html-telegram-bot-api](https://github.com/Bannerets/html-telegram-bot-api)
 
 ## CLI Options
 

@@ -1,4 +1,6 @@
 const css = require('css')
+const listHelpers = require('css-list-helpers')
+const unquote = require('unquote')
 const Method = require('html-telegram-bot-api/src/Method')
 const Command = require('html-telegram-bot-api/src/Command')
 
@@ -85,9 +87,9 @@ class Parser {
     return rule.declarations
       .filter(e => e.type === 'declaration' && e.property === 'tg-method')
       .map(e => {
-        const splitted = e.value.split(' ')
-        const name = splitted[0]
-        const pairs = _.chunk(splitted.slice(1), 2)
+        const list = listHelpers.splitBySpaces(e.value).map(unquote)
+        const name = list[0]
+        const pairs = _.chunk(list.slice(1), 2)
         const properties = _.fromPairs(pairs)
 
         return new Method(name, properties)

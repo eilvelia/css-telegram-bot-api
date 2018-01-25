@@ -44,7 +44,7 @@ $ css-telegram-bot-api [options] <path/to/css/file>
 }
 
 [tg-command="/help"] {
-  tg-method: sendMessage text Help;
+  tg-method: sendMessage text 'Help 1';
 }
 
 [tg-command="/echo (.+)"], .tg-regex {
@@ -54,6 +54,10 @@ $ css-telegram-bot-api [options] <path/to/css/file>
 
 [tg-command="/photo"] {
   tg-method: sendPhoto photo https://www.w3.org/html/logo/downloads/HTML5_Badge_64.png;
+}
+
+[tg-command="/hello"] {
+  tg-method: sendMessage text "Hello, world!"
 }
 ```
 

@@ -4,19 +4,24 @@ const Parser = require('./Parser')
 const TelegramBot = require('html-telegram-bot-api/src/TelegramBot')
 const pkg = require('../package.json')
 
-let filename = ''
-
 program
   .version(pkg.version)
   .arguments('<path/to/css/file>')
-  .action(arg => (filename = arg))
+  .action(start)
   .parse(process.argv)
 
-const css = fs.readFileSync(filename).toString()
+if (program.args.length === 0) {
+  console.error('filename is required')
+  process.exit(1)
+}
 
-const { token, commands } = Parser.parseCSS(css)
+function start (filename) {
+  const css = fs.readFileSync(filename).toString()
 
-const bot = new TelegramBot(token)
+  const { token, commands } = Parser.parseCSS(css)
 
-bot.addCommands(commands)
-bot.startPolling()
+  const bot = new TelegramBot(token)
+
+  bot.addCommands(commands)
+  bot.startPolling()
+}

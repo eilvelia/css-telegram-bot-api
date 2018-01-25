@@ -1,7 +1,7 @@
 {
   "name": "css-telegram-bot-api",
   "description": "Now you can write Telegram bots in CSS.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "src/index.js",
   "scripts": {
     "start": "node src",

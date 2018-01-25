@@ -45,7 +45,10 @@ class Parser {
       const match = selector.match(/\[tg-command="(.+?)"\]/)
 
       if (match) {
-        const [, trigger] = match
+        const [, sTrigger] = match
+        const isRegex = rule.selectors[1] === '.tg-regex'
+
+        const trigger = isRegex ? new RegExp(sTrigger) : sTrigger
         const methods = Parser.parseMethods(rule)
 
         const command = new Command(trigger, methods)

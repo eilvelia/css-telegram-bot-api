@@ -47,6 +47,11 @@ $ css-telegram-bot-api [options] <path/to/css/file>
   tg-method: sendMessage text Help;
 }
 
+[tg-command="/echo (.+)"], .tg-regex {
+  /* echobot */
+  tg-method: sendMessage text $1
+}
+
 [tg-command="/photo"] {
   tg-method: sendPhoto photo https://www.w3.org/html/logo/downloads/HTML5_Badge_64.png;
 }

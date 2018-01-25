@@ -14,9 +14,7 @@ program
 
 const css = fs.readFileSync(filename).toString()
 
-const parser = new Parser(css)
-
-const { token, commands } = parser.parseCSS()
+const { token, commands } = Parser.parseCSS(css)
 
 const bot = new TelegramBot(token)
 

@@ -9,35 +9,18 @@ const _ = {}
 _.chunk = require('lodash.chunk')
 _.fromPairs = require('lodash.frompairs')
 
+// static class
 class Parser {
-  /**
-   * Parser
-   * @param {string} css
-   */
-  constructor (str) {
-    const { stylesheet } = css.parse(str)
-
-    if (stylesheet.parsingErrors.length) {
-      console.error('Error!', stylesheet.parsingErrors)
-      throw new Error('Parsing Error')
-    }
-
-    const rules = stylesheet.rules.filter(e => e.type === 'rule')
-
-    this.rules = rules
-  }
-
   /**
    * parseCSS
    * @method parseCSS
+   * @param {string} str CSS
    * @return {{ token: string, commands: Array<Command> }}
    */
-  parseCSS () {
-    const { rules } = this
+  static parseCSS (str) {
+    const rules = Parser.makeAST(str)
 
-    let token = ''
-
-    const commands = rules.reduce((commands, rule) => {
+    const { token, commands } = rules.reduce(({ token, commands }, rule) => {
       const selector = rule.selectors[0]
 
       if (selector === '[tg-root]') {
@@ -47,7 +30,7 @@ class Parser {
       const match = selector.match(/\[tg-command="(.+?)"\]/)
 
       if (match) {
-        const [, sTrigger] = match
+        const sTrigger = match[1]
         const isRegex = rule.selectors[1] === '.tg-regex'
 
         const trigger = isRegex ? new RegExp(sTrigger) : sTrigger
@@ -58,12 +41,31 @@ class Parser {
         commands.push(command)
       }
 
-      return commands
-    }, [])
+      return { token, commands }
+    }, { token: '', commands: [] })
 
     if (!token) throw new Error('Token not specified')
 
     return { token, commands }
+  }
+
+  /**
+   * makeAST
+   * @method makeAST
+   * @param {string} str CSS
+   * @return {Object} AST
+   */
+  static makeAST (str) {
+    const { stylesheet } = css.parse(str)
+
+    if (stylesheet.parsingErrors.length) {
+      console.error('Error!', stylesheet.parsingErrors)
+      throw new Error('Parsing Error')
+    }
+
+    const rules = stylesheet.rules.filter(e => e.type === 'rule')
+
+    return rules
   }
 
   /**

@@ -1,4 +1,4 @@
-# [WIP] css-telegram-bot-api
+# css-telegram-bot-api
 
 [![npm](https://img.shields.io/npm/v/css-telegram-bot-api.svg)](https://www.npmjs.com/package/css-telegram-bot-api)
 [![GitHub repo size in bytes](https://img.shields.io/github/repo-size/Bannerets/css-telegram-bot-api.svg)](https://github.com/Bannerets/css-telegram-bot-api)

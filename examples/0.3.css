@@ -15,7 +15,7 @@
 
 [tg-command="/echo (.+)"], .tg-regex {
   /* echobot */
-  tg-method: sendMessage text $1
+  tg-method: sendMessage text $1;
 }
 
 [tg-command="/photo"] {
@@ -23,5 +23,5 @@
 }
 
 [tg-command="/hello"] {
-  tg-method: sendMessage text "Hello, world!"
+  tg-method: sendMessage text "Hello, world!";
 }

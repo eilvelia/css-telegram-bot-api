@@ -49,7 +49,7 @@ $ css-telegram-bot-api [options] <path/to/css/file>
 
 [tg-command="/echo (.+)"], .tg-regex {
   /* echobot */
-  tg-method: sendMessage text $1
+  tg-method: sendMessage text $1;
 }
 
 [tg-command="/photo"] {
@@ -57,7 +57,7 @@ $ css-telegram-bot-api [options] <path/to/css/file>
 }
 
 [tg-command="/hello"] {
-  tg-method: sendMessage text "Hello, world!"
+  tg-method: sendMessage text "Hello, world!";
 }
 ```
 

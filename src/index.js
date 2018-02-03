@@ -1,6 +1,6 @@
 const fs = require('fs')
 const program = require('commander')
-const Parser = require('./Parser')
+const { parseCSS } = require('./Parser')
 const TelegramBot = require('html-telegram-bot-api/src/TelegramBot')
 const pkg = require('../package.json')
 
@@ -18,7 +18,7 @@ if (program.args.length === 0) {
 function start (filename) {
   const css = fs.readFileSync(filename).toString()
 
-  const { token, commands } = Parser.parseCSS(css)
+  const { token, commands } = parseCSS(css)
 
   const bot = new TelegramBot(token)
 

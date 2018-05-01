@@ -51,7 +51,7 @@ const parseCSS = str => {
 /**
  * makeAST
  * @param {string} str CSS
- * @return {Object} AST
+ * @return {?Object} AST
  */
 const makeAST = str => {
   const { stylesheet } = css.parse(str)
